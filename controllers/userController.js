@@ -106,7 +106,7 @@ const login = async (req, res) => {
 
     const refreshToken = jwt.sign(
       {
-        access1: userExist?._id,
+        access2: userExist?._id,
       },
       process.env.refresh_secret,
       {
@@ -117,14 +117,14 @@ const login = async (req, res) => {
     // the cookies
     res.cookie('access', accessToken, {
       httpOnly: true,
-      // secure: true,
+      secure: true,
       sameSite: 'none',
       maxAge: 1 * 60 * 1000,
     });
 
     res.cookie('refresh', refreshToken, {
       httpOnly: true,
-      // secure: true,
+      secure: true,
       sameSite: 'none',
       maxAge: 5 * 24 * 60 * 60 * 1000,
     });
@@ -141,20 +141,73 @@ const login = async (req, res) => {
   }
 };
 
+// get all users
 const getUsers = async (req, res) => {
   try {
-    const users = await User.find({}).exec()
+    const users = await User.find({}).exec();
     res.status(200).json({
       success: true,
-      message: "Users fetched",
+      message: 'Users fetched',
       users,
-    })
+    });
   } catch (error) {
     res.status(500).json({
       success: false,
-      message: "Internal server error",
-    })
+      message: 'Internal server error',
+    });
   }
-}
+};
 
-export { register, login, getUsers };
+// get a user
+const getUser = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const user = await User.findById(id).exec();
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: 'No user',
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: 'User fetched',
+      user,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: 'Internal server error',
+    });
+  }
+};
+
+// validate user
+const validateUser = async (req, res) => {
+  const userdetails = req.user;
+
+  if (!userdetails) {
+    res.status(400).json({
+      valid: false,
+      message: 'access denied',
+    });
+    return;
+  }
+
+  const userdata = {
+    _id: userdetails._id,
+    name: userdetails.name,
+    email: userdetails.email,
+    bio: userdetails.bio,
+    image: userdetails.image,
+  };
+  res.status().json({
+    valid: true,
+    message: 'access granted',
+    userDetails: userdata,
+  });
+};
+export { register, login, getUsers, getUser, validateUser };
