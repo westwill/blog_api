@@ -44,13 +44,12 @@ const register = async (req, res) => {
     res.status(201).json({
       success: true,
       message: 'Registered successfully !',
-      user: newuser,
+      // user: newuser,
     });
   } catch (error) {
     res.status(500).json({
       success: false,
       message: 'Internal server error !',
-      user: newuser,
     });
   }
 };
@@ -116,15 +115,15 @@ const login = async (req, res) => {
 
     // the cookies
     res.cookie('access', accessToken, {
-      httpOnly: true,
-      secure: true,
+      // httpOnly: true,
+      // secure: true,
       sameSite: 'none',
       maxAge: 1 * 60 * 1000,
     });
 
     res.cookie('refresh', refreshToken, {
-      httpOnly: true,
-      secure: true,
+      // httpOnly: true,
+      // secure: true,
       sameSite: 'none',
       maxAge: 5 * 24 * 60 * 60 * 1000,
     });

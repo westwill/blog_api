@@ -13,7 +13,7 @@ export const checkAndRenewToken = (req, res, next) => {
   if (!accessToken) {
     // do somthing
 
-    // to che if the refresh token is still valid
+    // to check if the refresh token is still valid
     if (!refreshToken) {
       // do somthing
       return res.status(403).json({
@@ -21,7 +21,8 @@ export const checkAndRenewToken = (req, res, next) => {
         message: 'Session expired',
       });
     } else {
-      // do something else==
+      // do something else===
+
       // verify the refresh token===
       jwt.verify(
         refreshToken,
@@ -57,7 +58,7 @@ export const checkAndRenewToken = (req, res, next) => {
             console.log('the new access token =>', accessToken);
 
             res.cookie('access', accessToken, {
-              httpOnly: true,
+              // httpOnly: true,
               // secure: true,
               sameSite: 'none',
               maxAge: 1 * 60 * 1000,
@@ -95,5 +96,27 @@ export const checkAndRenewToken = (req, res, next) => {
         next();
       }
     });
+  }
+};
+
+export const isAdmin = (req, res, next) => {
+  const ifwest = req.user;
+  if (!ifwest) {
+    res.status(400).json({
+      success: false,
+      message: 'Not An Admin',
+    });
+    return;
+  }
+  console.log('request user details =>', ifwest);
+  // checking if user is admin===
+  if (!ifwest.isAdmin) {
+    res.status(403).json({
+      success: false,
+      message: 'Not Authorized',
+    });
+    return;
+  } else {
+    next();
   }
 };

@@ -1,4 +1,3 @@
-import { Timestamp } from 'mongodb';
 import mongoose from 'mongoose';
 
 const UserSchema = mongoose.Schema(
@@ -9,7 +8,7 @@ const UserSchema = mongoose.Schema(
     },
     image: {
       type: String,
-      default: "",
+      default: '',
     },
     bio: {
       type: String,
@@ -27,9 +26,13 @@ const UserSchema = mongoose.Schema(
       type: String,
       required: [true, 'please i need your password'],
     },
+    isAdmin: {
+      type: Boolean,
+      default: false,
+    },
   },
   {
-    timestamp: true,
+    timestamps: true,
   }
 );
 
